@@ -1,0 +1,8 @@
+# 避免把整个项目上下文都发给 Docker 守护进程
+.*
+target/*
+!target/*.jar
+src/
+node_modules/
+.git/
+.idea/

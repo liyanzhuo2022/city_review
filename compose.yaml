@@ -1,0 +1,89 @@
+# compose.yaml（无 version 字段）
+
+services:
+  mysql:
+    image: mysql:8.0
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: hmdp
+      # 生产可加：MYSQL_USER / MYSQL_PASSWORD（创建非 root 账号）
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"     # 宿主3306 -> 容器3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p${MYSQL_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    profiles: ["dev","prod"]
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server","--requirepass","${REDIS_PASSWORD}","--databases","1","--port","6379"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"     # 宿主6379 -> 容器6379
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD","redis-cli","-p","6379","-a","${REDIS_PASSWORD}","PING"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    profiles: ["dev","prod"]
+
+  # 开发：挂载 target/*.jar，改了就能热替换 jar（重新 mvn package 后）
+  app-dev:
+    image: eclipse-temurin:21-jre
+    working_dir: /app
+    volumes:
+      - ./target:/app/target:ro
+    command: ["sh","-lc","exec java -Dserver.port=18080 -jar target/*.jar"]
+    environment:
+      # 用服务名互联：mysql / redis
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/hmdp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "${MYSQL_USER:-root}"
+      SPRING_DATASOURCE_PASSWORD: "${MYSQL_PASSWORD}"
+      SPRING_REDIS_HOST: "redis"
+      SPRING_REDIS_PORT: "6379"
+      SPRING_REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      SPRING_FLYWAY_ENABLED: "true"
+      # 让 spring 使用 18080（等价于 application.yml 的 server.port）
+      SERVER_PORT: "18080"
+    depends_on:
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports:
+      - "${APP_PORT:-18080}:18080"     # 宿主18080 -> 容器18080
+    restart: unless-stopped
+    profiles: ["dev"]
+
+  # 生产：用 Dockerfile 构建镜像（复制 jar 进入镜像）
+  app-prod:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/hmdp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "${MYSQL_USER:-root}"
+      SPRING_DATASOURCE_PASSWORD: "${MYSQL_PASSWORD}"
+      SPRING_REDIS_HOST: "redis"
+      SPRING_REDIS_PORT: "6379"
+      SPRING_REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      SPRING_FLYWAY_ENABLED: "true"
+      SERVER_PORT: "18080"
+    depends_on:
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports:
+      - "${APP_PORT:-18080}:18080"
+    restart: unless-stopped
+    profiles: ["prod"]
+
+volumes:
+  mysql_data:
+  redis_data:
