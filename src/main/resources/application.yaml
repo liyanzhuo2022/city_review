@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/hmdp?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/hmdp?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&allowLoadLocalInfile=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:1234}
 
@@ -25,11 +25,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+
   flyway:
     enabled: true
     locations: classpath:db/migration
-    validate-on-migrate: true
-    baseline-on-migrate: false
+    baseline-on-migrate: true      # 目标库已有表时也能落地到 V1
+    clean-disabled: true           # 禁用 Flyway 清库
+    placeholders:
+      dataDir: ops/flyway/data     # 让 ${dataDir} 在 SQL 里可用
 
 mybatis-plus:
   type-aliases-package: com.hmdp.entity
