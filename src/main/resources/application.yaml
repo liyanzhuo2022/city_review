@@ -8,7 +8,16 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: none # 关闭 Hibernate DDL 建表，交给 Flyway
+    open-in-view: false
+    # 命名策略 —— 针对 Spring Boot 2.7 + Hibernate 5.x
+    properties:
+      # Spring 的物理命名策略：把 Java 的 camelCase -> 数据库 snake_case（小写加下划线）
+      hibernate.physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+      # Spring 的隐式命名策略：没写 @Table/@Column 时的默认命名更符合 Spring 习惯
+      hibernate.implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      # 时区（可选，推荐）：JDBC 层统一用 UTC，避免跨时区错位
+      hibernate.jdbc.time_zone: UTC
 
   flyway:
     enabled: true
@@ -17,9 +26,6 @@ spring:
     clean-disabled: true           # 禁用 Flyway 清库
     placeholders:
       dataDir: ops/flyway/data   # 让 ${dataDir} 在 SQL 里可用
-
-mybatis-plus:
-  type-aliases-package: com.hmdp.entity
 
 logging:
   level:

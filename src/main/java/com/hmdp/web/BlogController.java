@@ -1,4 +1,4 @@
-package com.hmdp.controller;
+package com.hmdp.web;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

@@ -1,6 +1,6 @@
-package com.hmdp.mapper;
+package com.hmdp.mapstruct;
 
-import com.hmdp.entity.VoucherOrder;
+import com.hmdp.entity.BlogComments;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 虎哥
  * @since 2021-12-22
  */
-public interface VoucherOrderMapper extends BaseMapper<VoucherOrder> {
+public interface BlogCommentsMapper extends BaseMapper<BlogComments> {
 
 }

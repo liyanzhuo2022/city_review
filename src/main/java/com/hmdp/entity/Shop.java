@@ -1,9 +1,6 @@
 package com.hmdp.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -11,18 +8,11 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("tb_shop")
+@Entity
+@Table(name = "tb_shop")
 public class Shop implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,7 +20,8 @@ public class Shop implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
@@ -41,6 +32,7 @@ public class Shop implements Serializable {
     /**
      * 商铺类型的id
      */
+    @Column(name = "type_id")
     private Long typeId;
 
     /**
@@ -64,13 +56,14 @@ public class Shop implements Serializable {
     private Double x;
 
     /**
-     * 维度
+     * 纬度
      */
     private Double y;
 
     /**
      * 均价，取整数
      */
+    @Column(name = "avg_price")
     private Long avgPrice;
 
     /**
@@ -91,19 +84,24 @@ public class Shop implements Serializable {
     /**
      * 营业时间，例如 10:00-22:00
      */
+    @Column(name = "open_hours")
     private String openHours;
 
     /**
      * 创建时间
      */
+    @Column(name = "create_time")
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
+    @Column(name = "update_time")
     private LocalDateTime updateTime;
 
-
-    @TableField(exist = false)
+    /**
+     * 距离（非表字段）
+     */
+    @Transient
     private Double distance;
 }

@@ -1,3 +1,5 @@
+# nginx
+
 # ==== paths ====
 NGX_ROOT := $(PWD)/ops/nginx
 NGX_CONF := conf/nginx.conf

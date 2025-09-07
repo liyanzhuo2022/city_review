@@ -1,4 +1,4 @@
-package com.hmdp.mapper;
+package com.hmdp.mapstruct;
 
 import com.hmdp.entity.SeckillVoucher;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
