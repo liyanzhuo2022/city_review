@@ -1,20 +1,20 @@
 package com.hmdp.service.impl;
 
-import com.hmdp.entity.Follow;
-import com.hmdp.mapstruct.FollowMapper;
-import com.hmdp.service.IFollowService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.repository.FollowRepository;
+import com.hmdp.service.FollowService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
+ * Follow 服务实现类
  *
- * @author 虎哥
- * @since 2021-12-22
+ * 只保留骨架，后续可实现业务逻辑
  */
 @Service
-public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> implements IFollowService {
+@RequiredArgsConstructor
+public class FollowServiceImpl implements FollowService {
 
+    private final FollowRepository followRepository;
+
+    // 未来在这里实现业务逻辑
 }

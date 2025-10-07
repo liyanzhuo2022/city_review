@@ -1,20 +1,20 @@
 package com.hmdp.service.impl;
 
-import com.hmdp.entity.VoucherOrder;
-import com.hmdp.mapstruct.VoucherOrderMapper;
-import com.hmdp.service.IVoucherOrderService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.repository.VoucherOrderRepository;
+import com.hmdp.service.VoucherOrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
+ * VoucherOrder 服务实现类
  *
- * @author 虎哥
- * @since 2021-12-22
+ * 只保留骨架，后续可实现业务逻辑
  */
 @Service
-public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, VoucherOrder> implements IVoucherOrderService {
+@RequiredArgsConstructor
+public class VoucherOrderServiceImpl implements VoucherOrderService {
 
+    private final VoucherOrderRepository voucherOrderRepository;
+
+    // 未来在这里实现业务逻辑
 }

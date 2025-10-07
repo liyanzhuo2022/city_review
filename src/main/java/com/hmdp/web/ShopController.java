@@ -2,29 +2,24 @@ package com.hmdp.web;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.Shop;
-import com.hmdp.service.IShopService;
+import com.hmdp.repository.ShopRepository;
 import com.hmdp.utils.SystemConstants;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
-/**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @RestController
 @RequestMapping("/shop")
+@RequiredArgsConstructor
 public class ShopController {
 
-    @Resource
-    public IShopService shopService;
+    public final ShopRepository shopRepository;
 
     /**
      * 根据id查询商铺信息
@@ -33,7 +28,7 @@ public class ShopController {
      */
     @GetMapping("/{id}")
     public Result queryShopById(@PathVariable("id") Long id) {
-        return Result.ok(shopService.getById(id));
+        return Result.ok(shopRepository.findById(id).orElse(null));
     }
 
     /**
@@ -44,7 +39,7 @@ public class ShopController {
     @PostMapping
     public Result saveShop(@RequestBody Shop shop) {
         // 写入数据库
-        shopService.save(shop);
+        shopRepository.save(shop);
         // 返回店铺id
         return Result.ok(shop.getId());
     }
@@ -56,8 +51,10 @@ public class ShopController {
      */
     @PutMapping
     public Result updateShop(@RequestBody Shop shop) {
-        // 写入数据库
-        shopService.updateById(shop);
+        if (shop.getId() == null) {
+            return Result.fail("id is required");
+        }
+        shopRepository.save(shop);
         return Result.ok();
     }
 
@@ -72,12 +69,10 @@ public class ShopController {
             @RequestParam("typeId") Integer typeId,
             @RequestParam(value = "current", defaultValue = "1") Integer current
     ) {
-        // 根据类型分页查询
-        Page<Shop> page = shopService.query()
-                .eq("type_id", typeId)
-                .page(new Page<>(current, SystemConstants.DEFAULT_PAGE_SIZE));
-        // 返回数据
-        return Result.ok(page.getRecords());
+        int pageIndex = Math.max(0, current - 1);
+        Pageable pageable = PageRequest.of(pageIndex, SystemConstants.DEFAULT_PAGE_SIZE);
+        List<Shop> records = shopRepository.findByTypeId(typeId, pageable).getContent();
+        return Result.ok(records);
     }
 
     /**
@@ -91,11 +86,15 @@ public class ShopController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "current", defaultValue = "1") Integer current
     ) {
-        // 根据类型分页查询
-        Page<Shop> page = shopService.query()
-                .like(StrUtil.isNotBlank(name), "name", name)
-                .page(new Page<>(current, SystemConstants.MAX_PAGE_SIZE));
-        // 返回数据
-        return Result.ok(page.getRecords());
+        int pageIndex = Math.max(0, current - 1);
+        Pageable pageable = PageRequest.of(pageIndex, SystemConstants.MAX_PAGE_SIZE);
+
+        List<Shop> records;
+        if (name == null || name.isBlank()) {
+            records = shopRepository.findAll(pageable).getContent();
+        } else {
+            records = shopRepository.findByNameContainingIgnoreCase(name, pageable).getContent();
+        }
+        return Result.ok(records);
     }
 }

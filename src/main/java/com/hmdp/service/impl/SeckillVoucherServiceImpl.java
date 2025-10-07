@@ -1,20 +1,21 @@
 package com.hmdp.service.impl;
 
-import com.hmdp.entity.SeckillVoucher;
-import com.hmdp.mapstruct.SeckillVoucherMapper;
-import com.hmdp.service.ISeckillVoucherService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.repository.SeckillVoucherRepository;
+import com.hmdp.service.SeckillVoucherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- * 秒杀优惠券表，与优惠券是一对一关系 服务实现类
- * </p>
+ * SeckillVoucher 服务实现类
  *
- * @author 虎哥
- * @since 2022-01-04
+ * 秒杀优惠券表，与优惠券是一对一关系
+ * 只保留骨架，后续可实现业务逻辑
  */
 @Service
-public class SeckillVoucherServiceImpl extends ServiceImpl<SeckillVoucherMapper, SeckillVoucher> implements ISeckillVoucherService {
+@RequiredArgsConstructor
+public class SeckillVoucherServiceImpl implements SeckillVoucherService {
 
+    private final SeckillVoucherRepository seckillVoucherRepository;
+
+    // 未来在这里实现业务逻辑
 }

@@ -1,20 +1,20 @@
 package com.hmdp.service.impl;
 
-import com.hmdp.entity.ShopType;
-import com.hmdp.mapstruct.ShopTypeMapper;
-import com.hmdp.service.IShopTypeService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.repository.ShopTypeRepository;
+import com.hmdp.service.ShopTypeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
+ * ShopType 服务实现类
  *
- * @author 虎哥
- * @since 2021-12-22
+ * 只保留骨架，后续可实现业务逻辑
  */
 @Service
-public class ShopTypeServiceImpl extends ServiceImpl<ShopTypeMapper, ShopType> implements IShopTypeService {
+@RequiredArgsConstructor
+public class ShopTypeServiceImpl implements ShopTypeService {
 
+    private final ShopTypeRepository shopTypeRepository;
+
+    // 未来在这里实现业务逻辑
 }

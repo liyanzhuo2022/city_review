@@ -4,6 +4,7 @@ import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -61,6 +62,7 @@ public class VoucherOrder implements Serializable {
     private LocalDateTime refundTime;
 
     /** 更新时间 */
+    @UpdateTimestamp
     @Column(name = "update_time")
     private LocalDateTime updateTime;
 }

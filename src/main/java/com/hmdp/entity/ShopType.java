@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -44,6 +46,7 @@ public class ShopType implements Serializable {
      * 创建时间
      */
     @JsonIgnore
+    @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
@@ -51,6 +54,7 @@ public class ShopType implements Serializable {
      * 更新时间
      */
     @JsonIgnore
+    @UpdateTimestamp
     @Column(name = "update_time")
     private LocalDateTime updateTime;
 }

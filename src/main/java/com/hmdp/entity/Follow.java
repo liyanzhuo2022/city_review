@@ -3,6 +3,7 @@ package com.hmdp.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,6 +32,7 @@ public class Follow implements Serializable {
     private Long followUserId;
 
     /** 创建时间 */
+    @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
 }

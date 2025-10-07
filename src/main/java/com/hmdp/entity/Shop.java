@@ -4,6 +4,8 @@ import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -90,12 +92,14 @@ public class Shop implements Serializable {
     /**
      * 创建时间
      */
+    @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
+    @UpdateTimestamp
     @Column(name = "update_time")
     private LocalDateTime updateTime;
 

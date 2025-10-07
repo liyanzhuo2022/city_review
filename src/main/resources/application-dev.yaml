@@ -1,3 +1,4 @@
+#application-dev.yaml
 server:
   port: ${APP_PORT:18080}
 
@@ -9,7 +10,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/hmdp?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&allowLoadLocalInfile=true
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/hmdp?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&allowLoadLocalInfile=true&allowPublicKeyRetrieval=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:1234}
 

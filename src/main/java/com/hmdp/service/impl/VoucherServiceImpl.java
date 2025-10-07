@@ -1,37 +1,31 @@
 package com.hmdp.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmdp.dto.Result;
-import com.hmdp.entity.Voucher;
-import com.hmdp.mapstruct.VoucherMapper;
 import com.hmdp.entity.SeckillVoucher;
-import com.hmdp.service.ISeckillVoucherService;
-import com.hmdp.service.IVoucherService;
+import com.hmdp.entity.Voucher;
+import com.hmdp.repository.VoucherRepository;
+import com.hmdp.repository.SeckillVoucherRepository;
+import com.hmdp.service.VoucherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ * Voucher 服务实现类（JPA 风格）
  */
 @Service
-public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher> implements IVoucherService {
+@RequiredArgsConstructor
+public class VoucherServiceImpl implements VoucherService {
 
-    @Resource
-    private ISeckillVoucherService seckillVoucherService;
+    private final VoucherRepository voucherRepository;
+    private final SeckillVoucherRepository seckillVoucherRepository;
 
     @Override
     public Result queryVoucherOfShop(Long shopId) {
-        // 查询优惠券信息
-        List<Voucher> vouchers = getBaseMapper().queryVoucherOfShop(shopId);
-        // 返回结果
+        // 这里不再用 Mapper，自定义查询方法交给 Repository
+        List<Voucher> vouchers = voucherRepository.findByShopId(shopId);
         return Result.ok(vouchers);
     }
 
@@ -39,13 +33,16 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher> impl
     @Transactional
     public void addSeckillVoucher(Voucher voucher) {
         // 保存优惠券
-        save(voucher);
+        voucherRepository.save(voucher);
+
         // 保存秒杀信息
         SeckillVoucher seckillVoucher = new SeckillVoucher();
         seckillVoucher.setVoucherId(voucher.getId());
         seckillVoucher.setStock(voucher.getStock());
         seckillVoucher.setBeginTime(voucher.getBeginTime());
         seckillVoucher.setEndTime(voucher.getEndTime());
-        seckillVoucherService.save(seckillVoucher);
+
+        seckillVoucherRepository.save(seckillVoucher);
     }
 }
+

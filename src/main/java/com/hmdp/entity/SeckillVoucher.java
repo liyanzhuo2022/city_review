@@ -3,6 +3,8 @@ package com.hmdp.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -35,6 +37,7 @@ public class SeckillVoucher implements Serializable {
     private Integer stock;
 
     /** 创建时间 */
+    @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
@@ -47,11 +50,13 @@ public class SeckillVoucher implements Serializable {
     private LocalDateTime endTime;
 
     /** 更新时间 */
+    @UpdateTimestamp
     @Column(name = "update_time")
     private LocalDateTime updateTime;
 
     /**
      * 乐观锁（可选）：如果你在高并发下更新库存，建议加这个字段
+     * 黑马点评本身也涉及乐观锁的讲解，可以到时候再加入
      */
 //    @Version
 //    private Long version;

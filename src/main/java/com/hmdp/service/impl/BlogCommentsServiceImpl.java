@@ -1,20 +1,20 @@
 package com.hmdp.service.impl;
 
-import com.hmdp.entity.BlogComments;
-import com.hmdp.mapstruct.BlogCommentsMapper;
-import com.hmdp.service.IBlogCommentsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.repository.BlogCommentsRepository;
+import com.hmdp.service.BlogCommentsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
+ * BlogComments 服务实现类
  *
- * @author 虎哥
- * @since 2021-12-22
+ * 只保留骨架，后续可实现业务逻辑
  */
 @Service
-public class BlogCommentsServiceImpl extends ServiceImpl<BlogCommentsMapper, BlogComments> implements IBlogCommentsService {
+@RequiredArgsConstructor
+public class BlogCommentsServiceImpl implements BlogCommentsService {
 
+    private final BlogCommentsRepository blogCommentsRepository;
+
+    // 未来在这里实现业务逻辑
 }

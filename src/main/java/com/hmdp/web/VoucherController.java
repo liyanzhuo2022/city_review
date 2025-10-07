@@ -3,25 +3,21 @@ package com.hmdp.web;
 
 import com.hmdp.dto.Result;
 import com.hmdp.entity.Voucher;
-import com.hmdp.service.IVoucherService;
+import com.hmdp.repository.VoucherRepository;
+import com.hmdp.service.VoucherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-/**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
+
 @RestController
 @RequestMapping("/voucher")
+@RequiredArgsConstructor
 public class VoucherController {
 
-    @Resource
-    private IVoucherService voucherService;
+    private final VoucherRepository voucherRepository;
+    private final VoucherService voucherService;
 
     /**
      * 新增普通券
@@ -30,7 +26,7 @@ public class VoucherController {
      */
     @PostMapping
     public Result addVoucher(@RequestBody Voucher voucher) {
-        voucherService.save(voucher);
+        voucherRepository.save(voucher);
         return Result.ok(voucher.getId());
     }
 

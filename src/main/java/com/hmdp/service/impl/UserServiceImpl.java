@@ -1,20 +1,20 @@
 package com.hmdp.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hmdp.entity.User;
-import com.hmdp.mapstruct.UserMapper;
-import com.hmdp.service.IUserService;
+import com.hmdp.repository.UserRepository;
+import com.hmdp.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- * 服务实现类
- * </p>
+ * User 服务实现类
  *
- * @author 虎哥
- * @since 2021-12-22
+ * 只保留骨架，后续可实现业务逻辑
  */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+
+    // 未来在这里实现业务逻辑
 }

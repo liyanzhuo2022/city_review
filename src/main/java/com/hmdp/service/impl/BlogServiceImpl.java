@@ -1,20 +1,19 @@
 package com.hmdp.service.impl;
 
 import com.hmdp.entity.Blog;
-import com.hmdp.mapstruct.BlogMapper;
-import com.hmdp.service.IBlogService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.repository.BlogRepository;
+import com.hmdp.service.BlogService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 /**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ * Blog 服务实现类
  */
 @Service
-public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
+@RequiredArgsConstructor
+public class BlogServiceImpl implements BlogService {
 
 }
+
