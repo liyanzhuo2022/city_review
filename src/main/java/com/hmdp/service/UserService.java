@@ -1,5 +1,11 @@
 package com.hmdp.service;
 
+import com.hmdp.dto.LoginFormDTO;
+import com.hmdp.dto.Result;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 /**
  * User 服务接口
  *
@@ -7,5 +13,7 @@ package com.hmdp.service;
  */
 public interface UserService {
 
-    // 未来在这里添加业务方法，比如用户注册、登录、修改资料等
+    Result sendCode(String phone, HttpSession session);
+
+    Result login(LoginFormDTO loginForm, HttpSession session);
 }

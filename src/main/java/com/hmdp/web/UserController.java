@@ -6,6 +6,7 @@ import com.hmdp.dto.Result;
 import com.hmdp.entity.UserInfo;
 import com.hmdp.repository.UserInfoRepository;
 import com.hmdp.repository.UserRepository;
+import com.hmdp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +22,14 @@ public class UserController {
 
     private final UserInfoRepository userInfoRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     /**
      * 发送手机验证码
      */
     @PostMapping("code")
     public Result sendCode(@RequestParam("phone") String phone, HttpSession session) {
-        // TODO 发送短信验证码并保存验证码
-        return Result.fail("功能未完成");
+        return userService.sendCode(phone, session);
     }
 
     /**
@@ -37,8 +38,8 @@ public class UserController {
      */
     @PostMapping("/login")
     public Result login(@RequestBody LoginFormDTO loginForm, HttpSession session){
-        // TODO 实现登录功能
-        return Result.fail("功能未完成");
+// 不再强转实现类，直接走接口方法（前端接口完全不变）
+        return userService.login(loginForm, session);
     }
 
     /**

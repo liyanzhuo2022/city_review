@@ -32,4 +32,13 @@ logging:
   level:
     com.hmdp: debug
 
+jwt:
+  secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_64+_CHARS"
+  access-ttl-minutes: 30
+  refresh-ttl-days: 14
+  refresh-cookie-name: "REFRESH_TOKEN"
+  cookie-domain: ""        # 本地留空；生产填你的域名
+  cookie-secure: false     # 本地 false；生产 true
+  cookie-same-site: "Lax"
+
 
