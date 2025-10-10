@@ -44,5 +44,13 @@ public class VoucherServiceImpl implements VoucherService {
 
         seckillVoucherRepository.save(seckillVoucher);
     }
+
+    @Override
+    @Transactional
+    public Long addVoucher(Voucher voucher) {
+        Voucher saved = voucherRepository.save(voucher);
+        return saved.getId();
+    }
+
 }
 

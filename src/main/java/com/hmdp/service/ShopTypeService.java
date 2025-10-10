@@ -1,11 +1,8 @@
 package com.hmdp.service;
 
-/**
- * ShopType 服务接口
- *
- * 只保留骨架，后续可添加业务方法
- */
-public interface ShopTypeService {
+import com.hmdp.entity.ShopType;
+import java.util.List;
 
-    // 未来在这里添加业务方法，比如加载店铺分类、排序等
+public interface ShopTypeService {
+    List<ShopType> queryTypeList();
 }

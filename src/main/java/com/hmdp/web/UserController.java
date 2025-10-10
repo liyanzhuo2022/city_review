@@ -6,6 +6,7 @@ import com.hmdp.dto.Result;
 import com.hmdp.entity.UserInfo;
 import com.hmdp.repository.UserInfoRepository;
 import com.hmdp.repository.UserRepository;
+import com.hmdp.service.UserInfoService;
 import com.hmdp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,8 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserInfoRepository userInfoRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final UserInfoService userInfoService;
 
     /**
      * 发送手机验证码
@@ -38,7 +38,6 @@ public class UserController {
      */
     @PostMapping("/login")
     public Result login(@RequestBody LoginFormDTO loginForm, HttpSession session){
-// 不再强转实现类，直接走接口方法（前端接口完全不变）
         return userService.login(loginForm, session);
     }
 
@@ -60,15 +59,11 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     public Result info(@PathVariable("id") Long userId){
-        // 查询详情
-        UserInfo info = userInfoRepository.findById(userId).orElse(null);
+        UserInfo info = userInfoService.getInfoForDisplay(userId);
         if (info == null) {
             // 没有详情，应该是第一次查看详情
             return Result.ok();
         }
-        info.setCreateTime(null);
-        info.setUpdateTime(null);
-        // 返回
         return Result.ok(info);
     }
 }

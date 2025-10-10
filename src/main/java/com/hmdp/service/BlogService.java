@@ -2,10 +2,11 @@ package com.hmdp.service;
 
 import com.hmdp.entity.Blog;
 
-/**
- * Blog 业务服务接口
- *
- * 只定义业务相关的方法，CRUD 交给 BlogRepository
- */
+import java.util.List;
+
 public interface BlogService {
+    Long saveBlog(Blog blog);
+    boolean likeBlog(Long id);
+    List<Blog> queryMyBlog(Integer current);
+    List<Blog> queryHotBlog(Integer current);
 }

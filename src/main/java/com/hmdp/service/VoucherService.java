@@ -10,7 +10,7 @@ import com.hmdp.entity.Voucher;
  */
 public interface VoucherService {
 
+    Long addVoucher(Voucher voucher);
     Result queryVoucherOfShop(Long shopId);
-
     void addSeckillVoucher(Voucher voucher);
 }

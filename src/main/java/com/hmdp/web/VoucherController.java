@@ -8,8 +8,6 @@ import com.hmdp.service.VoucherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-
 
 @RestController
 @RequestMapping("/voucher")
@@ -26,9 +24,10 @@ public class VoucherController {
      */
     @PostMapping
     public Result addVoucher(@RequestBody Voucher voucher) {
-        voucherRepository.save(voucher);
-        return Result.ok(voucher.getId());
+        Long id = voucherService.addVoucher(voucher);
+        return Result.ok(id);
     }
+
 
     /**
      * 新增秒杀券
