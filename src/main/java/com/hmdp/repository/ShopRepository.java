@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShopRepository extends JpaRepository<Shop, Long> {
-    Page<Shop> findByTypeId(Integer typeId, Pageable pageable);
+    Page<Shop> findByTypeId(Long typeId, Pageable pageable);
     Page<Shop> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
 

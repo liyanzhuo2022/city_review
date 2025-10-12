@@ -4,6 +4,7 @@ import com.hmdp.dto.Result;
 import com.hmdp.entity.Shop;
 import com.hmdp.service.ShopService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +19,7 @@ public class ShopController {
      */
     @GetMapping("/{id}")
     public Result queryShopById(@PathVariable("id") Long id) {
-        return Result.ok(shopService.getById(id));
+        return shopService.queryById(id);
     }
 
     /**
@@ -44,7 +45,7 @@ public class ShopController {
      */
     @GetMapping("/of/type")
     public Result queryShopByType(
-            @RequestParam("typeId") Integer typeId,
+            @RequestParam("typeId") Long typeId,
             @RequestParam(value = "current", defaultValue = "1") Integer current
     ) {
         return Result.ok(shopService.queryByType(typeId, current));
