@@ -8,9 +8,11 @@ import com.hmdp.repository.VoucherOrderRepository;
 import com.hmdp.repository.VoucherRepository;
 import com.hmdp.service.VoucherOrderService;
 import com.hmdp.utils.RedisIdWorker;
+import com.hmdp.utils.SimpleRedisLock;
 import com.hmdp.utils.UserHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class VoucherOrderServiceImpl implements VoucherOrderService {
     private final VoucherOrderRepository voucherOrderRepository;
     private final SeckillVoucherRepository seckillVoucherRepository;
     private final RedisIdWorker redisIdWorker;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -47,12 +50,22 @@ public class VoucherOrderServiceImpl implements VoucherOrderService {
         }
 
         Long userId = UserHolder.getUser().getId();
-        // 给用户id加悲观锁，实现一人一单
-        synchronized (userId.toString().intern()) {
+        //创建锁对象(新增代码)
+        SimpleRedisLock lock = new SimpleRedisLock("order:" + userId, stringRedisTemplate);
+        //获取锁对象
+        boolean isLock = lock.tryLock(1200);
+        //加锁失败
+        if (!isLock) {
+            return Result.fail("不允许重复下单");
+        }
+        try {
+            //获取代理对象(事务)
             VoucherOrderService proxy = (VoucherOrderService) AopContext.currentProxy();
             return proxy.createVoucherOrder(voucherId);
+        } finally {
+            //释放锁
+            lock.unLock();
         }
-
     }
 
     @Transactional
