@@ -1,8 +1,9 @@
 # 避免把整个项目上下文都发给 Docker 守护进程
-.*
+.git
 target/*
-!target/*.jar
-src/
-node_modules/
-.git/
-.idea/
+!target/app.jar
+**/node_modules
+**/.idea
+**/.vscode
+Dockerfile
+docker-compose.yaml

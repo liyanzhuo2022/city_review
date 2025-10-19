@@ -64,7 +64,7 @@
       <span class="voucher-icon">券</span>
       <span style="font-weight: bold;">代金券</span>
     </div>
-    <div class="voucher-box" v-for="v in vouchers" :key="v.id" v-if="!isEnd(v)">
+    <div class="voucher-box" v-for="v in vouchers" :key="v.id" v-if="!v.type || !isEnd(v)">
       <div class="voucher-circle">
         <div class="voucher-b"></div>
         <div class="voucher-b"></div>

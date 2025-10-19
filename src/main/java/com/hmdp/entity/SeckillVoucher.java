@@ -54,10 +54,4 @@ public class SeckillVoucher implements Serializable {
     @Column(name = "update_time")
     private LocalDateTime updateTime;
 
-    /**
-     * 乐观锁（可选）：如果你在高并发下更新库存，建议加这个字段
-     * 黑马点评本身也涉及乐观锁的讲解，可以到时候再加入
-     */
-//    @Version
-//    private Long version;
 }

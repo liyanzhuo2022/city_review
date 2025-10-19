@@ -30,6 +30,8 @@ public class SecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(entryPoint)
                 .and()
                 .authorizeHttpRequests(auth -> auth
+                        // —— 新增白名单 ——
+                        .antMatchers(HttpMethod.POST, "/voucher/seckill").permitAll()
                         .antMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .antMatchers(HttpMethod.POST, "/user/code").permitAll()
                         // 静态与健康检查

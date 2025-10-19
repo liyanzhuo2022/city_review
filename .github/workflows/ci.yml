@@ -1,0 +1,79 @@
+name: CI quick run
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write        # 推镜像到 GHCR
+  id-token: write        # 以后接 OIDC/CD 用，不影响现在
+
+jobs:
+  build-test-and-docker:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}   # 形如 owner/repo
+      JAVA_VERSION: '21'                     # 你的镜像是 temurin:21-jre，CI 也用 21
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Unit tests
+        run: mvn -B -ntp -DskipTests=false test
+
+      - name: Package jar
+        run: mvn -B -ntp -DskipTests package
+        # 你的 Dockerfile 用 COPY target/*.jar，所以先把 jar 打出来就行
+
+      - name: Upload surefire reports (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: |
+            **/target/surefire-reports/**
+            **/target/failsafe-reports/**
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: meta
+        run: |
+          SHA_SHORT=${GITHUB_SHA::12}
+          TAGS="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${SHA_SHORT}"
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            TAGS="$TAGS,${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          fi
+          echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
+
+      - name: Build image (as-is Dockerfile)
+        run: |
+          # 你的 Dockerfile: FROM eclipse-temurin:21-jre + COPY target/*.jar app.jar
+          # 这里不传任何 build-arg，直接构建
+          FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | cut -d',' -f1)
+          docker build -t "$FIRST_TAG" .
+
+      - name: Push all tags
+        run: |
+          IFS=',' read -ra TAGS <<< "${{ steps.meta.outputs.tags }}"
+          FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | cut -d',' -f1)
+          for tag in "${TAGS[@]}"; do
+            docker tag "$FIRST_TAG" "$tag"
+            docker push "$tag"
+          done

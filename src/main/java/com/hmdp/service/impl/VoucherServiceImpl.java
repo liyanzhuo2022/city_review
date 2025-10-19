@@ -1,6 +1,7 @@
 package com.hmdp.service.impl;
 
 import com.hmdp.dto.Result;
+import com.hmdp.dto.VoucherView;
 import com.hmdp.entity.SeckillVoucher;
 import com.hmdp.entity.Voucher;
 import com.hmdp.repository.VoucherRepository;
@@ -24,26 +25,31 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public Result queryVoucherOfShop(Long shopId) {
-        // 这里不再用 Mapper，自定义查询方法交给 Repository
-        List<Voucher> vouchers = voucherRepository.findByShopId(shopId);
+        List<VoucherView> vouchers = voucherRepository.queryVoucherOfShop(shopId);
         return Result.ok(vouchers);
     }
 
     @Override
     @Transactional
-    public void addSeckillVoucher(Voucher voucher) {
-        // 保存优惠券
-        voucherRepository.save(voucher);
+    /**
+     * 不要写：sv.setVoucherId(saved.getId())
+     * Hibernate 期望从 voucher 对象获取主键（因为用了 @MapsId）
+     * 从关联对象传递，根据 @MapsId 自动同步 voucher.id 到 voucher_id 列
+     * */
+    public void addSeckillVoucher(Voucher voucherInput) {
+        // 1) 先保存主表，拿到托管实体（含自增 id）
+        Voucher voucher = voucherRepository.save(voucherInput);
 
-        // 保存秒杀信息
-        SeckillVoucher seckillVoucher = new SeckillVoucher();
-        seckillVoucher.setVoucherId(voucher.getId());
-        seckillVoucher.setStock(voucher.getStock());
-        seckillVoucher.setBeginTime(voucher.getBeginTime());
-        seckillVoucher.setEndTime(voucher.getEndTime());
+        // 2) 再保存从表：必须设置对象关联，由 @MapsId 传递主键
+        SeckillVoucher sv = new SeckillVoucher();
+        sv.setVoucher(voucher);           // ★ 核心：不要 setVoucherId
+        sv.setStock(voucherInput.getStock());
+        sv.setBeginTime(voucherInput.getBeginTime());
+        sv.setEndTime(voucherInput.getEndTime());
 
-        seckillVoucherRepository.save(seckillVoucher);
+        seckillVoucherRepository.save(sv);
     }
+
 
     @Override
     @Transactional

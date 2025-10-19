@@ -1,4 +1,4 @@
-# compose.yaml（无 version 字段）
+# docker-compose.yaml（无 version 字段）
 
 services:
   mysql:

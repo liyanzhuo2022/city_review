@@ -52,15 +52,15 @@ public class Voucher implements Serializable {
     /** 状态 */
     private Integer status;
 
-    /** 库存（非表字段） */
+    /** 库存 */
     @Transient
     private Integer stock;
 
-    /** 生效时间（非表字段） */
+    /** 生效时间 */
     @Transient
     private LocalDateTime beginTime;
 
-    /** 失效时间（非表字段） */
+    /** 失效时间 */
     @Transient
     private LocalDateTime endTime;
 

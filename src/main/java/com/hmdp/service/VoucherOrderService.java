@@ -1,5 +1,7 @@
 package com.hmdp.service;
 
+import com.hmdp.dto.Result;
+
 /**
  * VoucherOrder 服务接口
  *
@@ -7,5 +9,7 @@ package com.hmdp.service;
  */
 public interface VoucherOrderService {
 
-    // 未来在这里添加业务方法
+    Result seckillVoucher(Long voucherId);
+
+    Result createVoucherOrder(Long voucherId);
 }

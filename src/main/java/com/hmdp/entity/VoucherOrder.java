@@ -4,6 +4,7 @@ import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
@@ -50,6 +51,7 @@ public class VoucherOrder implements Serializable {
     private LocalDateTime createTime;
 
     /** 支付时间 */
+    @CreationTimestamp
     @Column(name = "pay_time")
     private LocalDateTime payTime;
 
@@ -65,4 +67,10 @@ public class VoucherOrder implements Serializable {
     @UpdateTimestamp
     @Column(name = "update_time")
     private LocalDateTime updateTime;
+
+    @PrePersist
+    public void prePersist() {
+        if (createTime == null) createTime = LocalDateTime.now();
+        if (updateTime == null) updateTime = LocalDateTime.now();
+    }
 }
