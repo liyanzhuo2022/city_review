@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}   # 形如 owner/repo
+      IMAGE_NAME: ${{ toLower(github.repository) }}    # 形如 owner/repo
       JAVA_VERSION: '21'                     # 你的镜像是 temurin:21-jre，CI 也用 21
     steps:
       - name: Checkout
