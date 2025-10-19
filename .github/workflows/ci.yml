@@ -94,7 +94,8 @@ jobs:
         run: |
           # 你的 Dockerfile: FROM eclipse-temurin:21-jre + COPY target/*.jar app.jar
           FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | cut -d',' -f1)
-          docker build -t "$FIRST_TAG" .
+          docker build --platform linux/arm64 -t "$FIRST_TAG" .
+
 
       - name: Push all tags
         run: |
