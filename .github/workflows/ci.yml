@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}    # 形如 owner/repo
       JAVA_VERSION: '21'                     # 你的镜像是 temurin:21-jre，CI 也用 21
     steps:
       - name: Checkout
@@ -36,6 +35,31 @@ jobs:
         run: mvn -B -ntp -DskipTests package
         # 你的 Dockerfile 用 COPY target/*.jar，所以先把 jar 打出来就行
 
+      # ✅ 新增：准备 Docker 构建上下文，让 target/app.jar 一定存在且不被忽略
+      - name: Prepare docker context (allow target/app.jar)
+        run: |
+          set -e
+          echo "List target after package:"
+          ls -lah target/ || true
+
+          # 1) 复制产物为固定名，方便 Dockerfile 的 COPY target/*.jar app.jar
+          JAR=$(ls -1 target/*.jar | head -n1)
+          echo "Found jar: $JAR"
+          cp "$JAR" target/app.jar
+
+          # 2) 若存在 .dockerignore，确保不会屏蔽 target/app.jar
+          if [ -f .dockerignore ]; then
+            echo "" >> .dockerignore
+            echo "# --- CI override to include built jar ---" >> .dockerignore
+            sed -i '/^target$/d;/^target\/\*$/d;/^\*\/target\/\*$/d' .dockerignore || true
+            echo '!target/app.jar' >> .dockerignore
+            echo "Effective .dockerignore:"
+            cat .dockerignore
+          fi
+
+          echo "Verify target:"
+          ls -lah target/
+
       - name: Upload surefire reports (always)
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,20 +76,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ✅ 改动：在这里把仓库名转小写再拼 tag，避免 repository 必须小写的错误
       - name: Compute image tags
         id: meta
         run: |
+          set -e
+          REPO_LOWER=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
           SHA_SHORT=${GITHUB_SHA::12}
-          TAGS="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${SHA_SHORT}"
+          TAGS="${{ env.REGISTRY }}/${REPO_LOWER}:${SHA_SHORT}"
           if [ "${{ github.ref_name }}" = "main" ]; then
-            TAGS="$TAGS,${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+            TAGS="$TAGS,${{ env.REGISTRY }}/${REPO_LOWER}:latest"
           fi
           echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
+          echo "Computed tags: $TAGS"
 
       - name: Build image (as-is Dockerfile)
         run: |
           # 你的 Dockerfile: FROM eclipse-temurin:21-jre + COPY target/*.jar app.jar
-          # 这里不传任何 build-arg，直接构建
           FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | cut -d',' -f1)
           docker build -t "$FIRST_TAG" .
 
